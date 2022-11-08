@@ -1,0 +1,28 @@
+package hub
+
+def screen(){
+    screen.summon(home, credit, leaderboard, info){
+        intro.close()
+    }
+}
+screen.setoncredit{
+    credit.benjamin874("3D Models & Animations")
+    credit.theblueman003("Datapack & Terrain")
+}
+screen.setonleaderboard{
+    //tellraw(@p,("Click here to see the leaderboard",color=yellow,link="https://theblueman003.com/lb/leaderboard.php?lb=chill_parkour"))
+}
+def ticking main(){
+    input.onblackstonebutton(-5,139,-35){
+        tellraw(@p,("Click here to download the resources pack.",link="https://www.mediafire.com/file/ainqn7pxr0y7ua4/Chill_Parkour_RP.zip/file"))
+    }
+}
+
+def join(){
+    /execute in minecraft:overworld run tp @s 0.90 108.00 3.47 -541.49 -5.85
+    gamemode(adventure)
+    screen.addcontroll()
+    at(@s){
+        spawnpoint()
+    }
+}

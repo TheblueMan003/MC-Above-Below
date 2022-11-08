@@ -1,0 +1,30 @@
+package cp
+
+def ticking main(){
+    with(@a,true){
+        maps.initPlayer(){
+            /execute in minecraft:overworld run tp @s 0.90 108.00 3.47 -541.49 -5.85
+            gamemode(adventure)
+            screen.addcontroll()
+            at(@s){
+                spawnpoint()
+            }
+        }
+        @playertick()
+        effect.saturation()
+        effect.night_vision()
+    }
+    with(@e[type=item],true){
+        @itemtick()
+        if (@s[tag=!item.eltra]){
+            kill()
+        }
+    }
+    screen.screen_tick()
+}
+
+package .
+
+def lazy give(int $item){
+    /give @s $item
+}

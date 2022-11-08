@@ -1,0 +1,124 @@
+package leaderboard
+
+int[5] times
+forgenerate($i,0,4){
+    times.$i := int.maxValue
+}
+INT Score
+int tick
+int team
+bool finished := false
+bool cubed = false
+
+def onFinish(int time){
+    if (cubed){
+        finished = true
+        bool placed = false
+        Score := int.maxValue
+        int newScore = time
+        if (newScore < Score){
+            Score = newScore
+        }
+        forgenerate($i,0,4){
+            if (time < times[$i] && !placed){
+                placed = true
+                forgenerate($j,3,$i,-1){
+                    times[$eval($j+1)] = times[$j]
+                    /clone $eval($j-31) 1 -15 $eval($j-31) 1 -15 $eval($j-30) 1 -15
+                }
+                times[$i] = time
+                int ms = (time%20)*5
+                int s = (time/20)%60
+                int m = (time/$eval(20*60))%60
+                int h = (time/$eval(20*60*60))
+                tag(owner)
+                positioned($eval($i-31) 1 -15){
+                    if (m < 10 && s < 10 && ms < 10){
+                        entity.storeJson((f"{@a[tag=owner]} - {h}:0{m}:0{s}.0{ms}"))
+                    }
+                    if (m < 10 && s < 10 && ms >= 10){
+                        entity.storeJson((f"{@a[tag=owner]} - {h}:0{m}:0{s}.{ms}"))
+                    }
+                    if (m < 10 && s >= 10 && ms < 10){
+                        entity.storeJson((f"{@a[tag=owner]} - {h}:0{m}:{s}.0{ms}"))
+                    }
+                    if (m < 10 && s >= 10 && ms >= 10){
+                        entity.storeJson((f"{@a[tag=owner]} - {h}:0{m}:{s}.{ms}"))
+                    }
+                    if (m >= 10 && s < 10 && ms < 10){
+                        entity.storeJson((f"{@a[tag=owner]} - {h}:{m}:0{s}.0{ms}"))
+                    }
+                    if (m >= 10 && s < 10 && ms >= 10){
+                        entity.storeJson((f"{@a[tag=owner]} - {h}:{m}:0{s}.{ms}"))
+                    }
+                    if (m >= 10 && s >= 10 && ms < 10){
+                        entity.storeJson((f"{@a[tag=owner]} - {h}:{m}:{s}.0{ms}"))
+                    }
+                    if (m >= 10 && s >= 10 && ms >= 10){
+                        entity.storeJson((f"{@a[tag=owner]} - {h}:{m}:{s}.{ms}"))
+                    }
+                }
+                untag(owner)
+            }
+        }
+        updateLDB()
+    }
+}
+def updateLDB(){
+    with(ldb_display){
+        update()
+    }
+}
+class ldb_display initer minecraft:armor_stand{Invisible:1,Marker:1}{
+    int n
+    def __init__(int number){
+        n = number
+    }
+    def update(){
+        switch(n){
+            forgenerate($i,0,4){
+                case($i){
+                    positioned($eval($i-31) 1 -15){
+                        entity.copyNameFromStoredJson()
+                    }
+                }
+            }
+            case(-1){
+                entity.setName(("Leaderboard",aqua,bold))
+            }
+        }
+    }
+}
+def createLDB(){
+    with(ldb_display){
+        kill()
+    }
+    positioned(-7 109 -13){
+        positioned(~ ~ ~){new ldb_display(4)}
+        positioned(~ ~0.5 ~){new ldb_display(3)}
+        positioned(~ ~1 ~){new ldb_display(2)}
+        positioned(~ ~1.5 ~){new ldb_display(1)}
+        positioned(~ ~2 ~){new ldb_display(0)}
+        positioned(~ ~2.5 ~){new ldb_display(-1)}
+    }
+    forceload(-31 -15 -31 -15)
+    forceload(-7,107,-13)
+    forgenerate($j,0,4){
+        positioned($eval($j-31) 1 -15){
+            if (!block(~ ~ ~ oak_sign)){
+                entity.storeJson((f"placeholder - 999:59:59.99"))
+            }
+        }
+    }
+    updateLDB()
+}
+schedule.add(10){
+    if (cubed){
+        createLDB()
+    }
+    else{
+        with(ldb_display){
+            kill()
+        }
+    }
+}

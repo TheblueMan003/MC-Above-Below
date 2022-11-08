@@ -1,0 +1,131 @@
+package car
+
+INT Step
+INT Tick
+
+bool canStartCar1 := true
+bool canStartCar2 := true
+bool canStartCar3 := true
+def ticking main(){
+    with(@e[tag=car,type=marker],true){
+        Tick ++
+        if (Tick > 5){
+            Tick = 0
+            Step ++
+            if (tag(car_1)){
+                car1()
+            }
+            if (tag(car_2)){
+                car2()
+            }
+            if (tag(car_3)){
+                car3()
+            }
+        }
+    }
+}
+
+room car1 = room(-129,108,-101,-118,115,-115)
+car1.onstay{
+    startcar1()
+}
+room car2 = room(-230,108,-86,-218,119,-100)
+car2.onstay{
+    startcar2()
+}
+room car3 = room(-195,107,-5,-213,118,8)
+car3.onstay{
+    startcar3()
+}
+
+def startcar1(){
+    if (canStartCar1){
+        /summon marker -128 108 -114 {Tags:["car","car_1"]}
+        canStartCar1 = false
+    }
+}
+def startcar2(){
+    if (canStartCar2){
+        /summon marker -230 108 -100 {Tags:["car","car_2"]}
+        canStartCar2 = false
+    }
+}
+def startcar3(){
+    if (canStartCar3){
+        /summon marker -213 108 -4 {Tags:["car","car_3"]}
+        canStartCar3 = false
+    }
+}
+
+def resetcar1(){
+    positioned(-128 108 -114){
+        structure("car_1")
+    }
+    canStartCar1 = true
+}
+def resetcar2(){
+    positioned(-230 108 -100){
+        structure("car_2")
+    }
+    canStartCar2 = true
+}
+def resetcar3(){
+    positioned(-213 108 -4){
+        structure("car_3")
+    }
+    canStartCar3 = true
+}
+
+def car1(){
+    if (Step < 47 && Step > 2){
+        /tp @s ~-1 ~ ~
+        at(@s){
+            structure("car_1")
+            /setblock ~ ~1 ~ air
+            /fill ~10 ~ ~ ~10 ~5 ~12 air
+        }
+    }
+    if (Step == 55){
+        /fill ~ ~ ~ ~9 ~5 ~12 air
+        kill()
+    }
+    if (Step == 20){
+        resetcar1()
+    }
+}
+
+def car2(){
+    if (Step < 42 && Step > 2){
+        /tp @s ~ ~ ~1
+        at(@s){
+            structure("car_2")
+            /setblock ~ ~1 ~ air
+            /fill ~ ~ ~-1 ~12 ~5 ~-1 air
+        }
+    }
+    if (Step == 55){
+        /fill ~ ~ ~ ~12 ~5 ~14 air
+        kill()
+    }
+    if (Step == 20){
+        resetcar2()
+    }
+}
+
+def car3(){
+    if (Step < 40 && Step > 2){
+        /tp @s ~1 ~ ~
+        at(@s){
+            structure("car_3")
+            /setblock ~ ~1 ~ air
+            /fill ~-1 ~ ~ ~-1 ~6 ~12 air
+        }
+    }
+    if (Step == 55){
+        /fill ~ ~ ~ ~18 ~6 ~12 air
+        kill()
+    }
+    if (Step == 20){
+        resetcar3()
+    }
+}

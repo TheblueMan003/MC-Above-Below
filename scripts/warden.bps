@@ -1,0 +1,140 @@
+package warden
+
+INT Tick
+def ticking main(){
+    with(@e[tag=warden,type=marker],true){
+        Tick++
+        if (Tick == 1){
+            /function warden:animations/animation.warden.sonic_boom/play
+            with(@a[distance=..20]){
+                sound.play(minecraft:entity.warden.sonic_charge)
+            }
+        }
+        if (Tick == 25){
+            with(@a[distance=..20]){
+                sound.play(minecraft:entity.warden.sonic_boom)
+            }
+            positioned(^ ^1.5 ^1){
+                shoot(30)
+            }
+        }
+        if (Tick == 35){
+            /function warden:animations/animation.warden.sniff/play
+            with(@a[distance=..20]){
+                sound.play(minecraft:entity.warden.sniff)
+            }
+        }
+        if (Tick == 100){
+            Tick = 0
+        }
+    }
+}
+def shoot(int distance){
+    if (distance > 0){
+        with(@a[distance=..1]){
+            parkour.die()
+        }
+        /particle minecraft:sonic_boom ~ ~ ~
+        positioned(^ ^ ^0.5){
+            shoot(distance-1)
+        }
+    }
+}
+
+def summon(){
+    /function warden:summon/default
+}
+lazy addtag(int $tag){
+    with(@e[tag=warden,tag=!tagged,type=marker]){
+        tag($tag)
+        tag(tagged)
+    }
+}
+lazy remove(int $tag){
+    with(@e[tag=warden,type=marker,tag=$tag],true){
+        /function warden:remove/this
+    }
+}
+
+level level3{
+    def main(){
+    }
+    def onstart(){
+        positioned(220 -52 -153){
+            facing(219 -52 -153){
+                summon()
+            } 
+        }
+        positioned(220 -52 -148){
+            facing(219 -52 -148){
+                summon()
+            } 
+        }
+        positioned(220 -52 -143){
+            facing(219 -52 -143){
+                summon()
+            } 
+        }
+        addtag(lvl3)
+    }
+    def onstop(){
+        remove(lvl3)
+    }
+    def oninit(){
+        setup(224,-41,-165,193,-64,-120)
+    }
+}
+
+level level5{
+    def main(){
+    }
+    def onstart(){
+        positioned(183 -49 -39){
+            facing(184 -49 -39){
+                summon()
+            } 
+        }
+        positioned(194 -49 -22){
+            facing(193 -49 -22){
+                summon()
+            } 
+        }
+        addtag(lvl5)
+    }
+    def onstop(){
+        remove(lvl5)
+    }
+    def oninit(){
+        setup(199,-64,-58,176,-37,5)
+    }
+}
+
+
+level level7{
+    def main(){
+    }
+    def onstart(){
+        positioned(181 -49 96){
+            facing(182 -49 96){
+                summon()
+            } 
+        }
+        positioned(197 -49 91){
+            facing(196 -49 91){
+                summon()
+            } 
+        }
+        positioned(181 -49 86){
+            facing(182 -49 86){
+                summon()
+            } 
+        }
+        addtag(lvl7)
+    }
+    def onstop(){
+        remove(lvl7)
+    }
+    def oninit(){
+        setup(199,-36,66,176,-64,114)
+    }
+}

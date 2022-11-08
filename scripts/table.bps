@@ -1,0 +1,69 @@
+package table
+
+def p1(){
+    int x = @s.rot_x
+    entity.summon(armor_stand, {Tags:["cp.prevWinner"],Invisible:1,Marker:1}){
+        armor_stand.setmodel(emerald, 1)
+        @s.rot_x = x
+    }
+    positioned(~ ~2 ~){
+        entity.summon(armor_stand, {Tags:["cp.prevName"],Invisible:1,Marker:1}){
+            entity.setjsonname("P_King")
+        }
+    }
+    positioned(~ ~2.5 ~){
+        entity.summon(armor_stand, {Tags:["cp.prevName"],Invisible:1,Marker:1}){
+            entity.setjsonname("1st Place")
+        }
+    }
+}
+
+
+def p2(){
+    int x = @s.rot_x
+    entity.summon(armor_stand, {Tags:["cp.prevWinner"],Invisible:1,Marker:1}){
+        armor_stand.setmodel(emerald, 2)
+        @s.rot_x = x
+    }
+    positioned(~ ~2 ~){
+        entity.summon(armor_stand, {Tags:["cp.prevName"],Invisible:1,Marker:1}){
+            entity.setjsonname("TuDurak")
+        }
+    }
+    positioned(~ ~2.5 ~){
+        entity.summon(armor_stand, {Tags:["cp.prevName"],Invisible:1,Marker:1}){
+            entity.setjsonname("2nd Place")
+        }
+    }
+}
+
+def p3(){
+    int x = @s.rot_x
+    entity.summon(armor_stand, {Tags:["cp.prevWinner"],Invisible:1,Marker:1}){
+        armor_stand.setmodel(emerald, 3)
+        @s.rot_x = x
+    }
+    positioned(~ ~2 ~){
+        entity.summon(armor_stand, {Tags:["cp.prevName"],Invisible:1,Marker:1}){
+            entity.setjsonname("Stemister")
+        }
+    }
+    positioned(~ ~2.5 ~){
+        entity.summon(armor_stand, {Tags:["cp.prevName"],Invisible:1,Marker:1}){
+            entity.setjsonname("3rd Place")
+        }
+    }
+}
+
+def title(){
+    positioned(~ ~2 ~){
+        entity.summon(armor_stand, {Tags:["cp.prevName"],Invisible:1,Marker:1}){
+            entity.setjsonname(("No Time To Stop 2", gold, bold))
+        }
+    }
+    positioned(~ ~1.5 ~){
+        entity.summon(armor_stand, {Tags:["cp.prevName"],Invisible:1,Marker:1}){
+            entity.setjsonname(("Leaderboard", yellow, bold))
+        }
+    }
+}

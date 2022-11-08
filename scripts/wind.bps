@@ -1,0 +1,71 @@
+package wind
+
+INT DT
+BOOL INWind
+def compute(){
+    INWind = false
+    bool found = false
+    INT Sound,ClearSnd
+    Sound:=0
+    forgenerate($i,2,20){
+        if (block(~ ~-$i ~ gilded_blackstone)){
+            found = true
+            effect.levitation(1,$eval(25-$i),true)
+            DT = 0
+        }
+    }
+    if (!found && !block(~ ~-21 ~ gilded_blackstone)){
+        DT = 0
+    }
+    if (found && Sound <= 0){
+        /stopsound @a * minecraft:item.elytra.flying
+        sound.play(minecraft:item.elytra.flying)
+        Sound = 40
+    }
+    if (found){
+        INWind = true
+        ClearSnd = 10
+    }
+    if (!found && ClearSnd <= 0){
+        /stopsound @a * minecraft:item.elytra.flying
+    }
+    if (Sound > 0){
+        Sound--
+    }
+    if (ClearSnd > 0){
+        ClearSnd--
+    }
+    if (DT > 0){
+        DT --
+        if (DT == 0){
+            effect.clearlevitation()
+        }
+    }
+}
+
+def summon(){
+    aligned{
+        entity.summon(armor_stand,{Tags:["windcaster"],Invisible:1,NoGravity:1}){
+            armor_stand.setmodel(scute,50)
+        }
+    }
+}
+lazy addtag(int $tag){
+    with(@e[tag=windcaster,tag=!lbs]){
+        tag(lbs)
+        tag($tag)
+    }
+}
+lazy remove(int $tag){
+    with(@e[tag=$tag,tag=windcaster]){
+        main.stop()
+        kill()
+    }
+}
+
+def ticking main(){
+    with(@e[type=armor_stand,tag=windcaster],true){
+        /tp @s ~ ~ ~ ~20 ~
+        /particle minecraft:end_rod ~ ~ ~ 0 10 0 0.1 1
+    }
+}

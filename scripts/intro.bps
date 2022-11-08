@@ -1,0 +1,28 @@
+package intro
+
+INT isIntro
+INT Tick
+INT Scene
+
+def start(){
+    isIntro = true
+    Tick = 0
+    Scene = 0
+    gamemode(spectator)
+    parkour.Started = false
+    parkour.Time = timer()
+}
+def close(){
+    isIntro = false
+    Tick = 0
+    Scene = 0
+    gamemode(adventure)
+    /execute in minecraft:overworld run tp @s 157.69 -53.00 -232.62 -810.84 -3.36
+    parkour.timerStart()
+}
+
+def ticking main(){
+    with(@a,true,isIntro){
+        close()
+    }
+}

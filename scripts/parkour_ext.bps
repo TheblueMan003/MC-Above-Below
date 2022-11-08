@@ -1,0 +1,248 @@
+package parkour
+
+blocktags fast_snake = red_glazed_terracotta
+blocktags normal_snake = purple_glazed_terracotta
+
+
+TIMER Time
+BOOL Started
+INT Level
+BOOL Dead
+INT DisplayJump
+INT DisplayUpdate
+INT X,Y,Z, PTick
+
+blocktags kill_block3{
+    smooth_sandstone
+}
+blocktags kill_block2{
+    obsidian,
+    blue_wool,
+    light_blue_wool,
+    cyan_wool,
+    gray_wool,
+}
+blocktags kill_block{
+    sculk,
+    grass_block,
+    oak_leaves,
+    oak_wood,
+    dirt,
+    stone,
+    barrier,
+    cobblestone,
+    tuff,
+    mycelium,
+    #minecraft:leaves,
+    #minecraft:logs,
+    spruce_wood,
+    crimson_nylium,
+    warped_nylium,
+    soul_sand,
+    soul_soil,
+    moss_block,
+    rooted_dirt,
+    dirt,
+    clay,
+    deepslate,
+    cobbled_deepslate,
+    deepslate_diamond_ore,
+    deepslate_coal_ore,
+    magma_block,
+    brown_mushroom_block,
+    red_mushroom_block,
+    netherrack,
+    warped_wart_block,
+    nether_wart_block,
+    shroomlight,
+    basalt,
+    lava,
+    oak_planks,
+    snow_block,
+    smooth_basalt,
+    coal_block,
+    calcite,
+    white_concrete,
+    black_concrete,
+    blackstone,
+    bone_block,
+    nether_wart_block,
+    cobbled_deepslate,
+    water,
+    birch_planks,
+    warped_wart_block,
+    deepslate_bricks,
+    deepslate_tile_stairs,
+    deepslate,
+    deepslate_tiles,
+    chest,
+    polished_andesite,
+    spruce_slab,
+    stone_slab
+}
+
+blocktags cold_block{
+    calcite,
+    snow_block,
+    white_concrete
+}
+blocktags ice{
+    packed_ice,
+    blue_ice
+}
+
+def die(){
+    if (@s[gamemode=adventure] && !Dead && Started){
+        parkour_spawnpoint.respawn()
+        Dead = true
+        Time.addDeath()
+        elytra.rm_elytra()
+        clear(firework_rocket)
+        Time.pause()
+    }
+}
+def timerStart(){
+    Time = timer()
+    Time.showDeath()
+    Time.showLevel()
+    Time.setLevel(1)
+    Time.setMaxLevel(40)
+    Time.setDisplay(true)
+    Time.start()
+    Level = 1
+    speedrun.start()
+    elytra.rm_elytra()
+    checkpoint.start()
+    Time.pause()
+    
+    Started = true
+}
+INT LevelStartTime
+INT RealTime
+checkpoint.onleave{
+    Time.continue()
+    LevelStartTime = parkour.Time.getTime()
+}
+checkpoint.oncheckpoint{
+    Time.pause()
+    Level++
+    speedrun.step(Level, Time.gettime())
+    Time.setLevel(Level)
+    elytra.rm_elytra()
+    clear(firework_rocket)
+    
+    int delta = parkour.Time.getTime()
+    delta -= LevelStartTime
+    RealTime += delta
+}
+def reset(){
+    Time = timer()
+}
+def timerpause(){
+    Time.pause()
+}
+def timerhide(){
+    Time.setdisplay(false)
+}
+def timerEnd(){
+    if (Started){
+        Time.stop()
+        Started = false
+        if(!@s[tag=Cheat]){
+            /function parkour:leaderboard/submit
+        }
+        speedrun.stop(Level, Time.gettime())
+        elytra.rm_elytra()
+    }
+}
+INT ConfirmTick
+INT FinishTick
+def ticking main(){
+    with(@a,true){
+        if (FinishTick > 0){
+            FinishTick--
+            if (FinishTick == 0){
+                recap.show_recap()
+            }
+        }
+        if (entity.adventure() && Started){
+            inventory.setslot(hotbar.8,carrot_on_a_stick{CustomModelData:1,display:{Name:'[{"text":"Restart","italic":false,"color":"red"}]',Lore:['[{"text":"Click to restart the map.","italic":false,"color":"yellow"}]']}})
+            inventory.setslot(hotbar.7,carrot_on_a_stick{CustomModelData:2,display:{Name:'[{"text":"Go back to Checkpoint","italic":false,"color":"red"}]',Lore:['[{"text":"Click to go back to the checkpoint.","italic":false,"color":"yellow"}]']}})
+        }
+        
+        ConfirmTick--
+        if (Started){
+            input.onclick{
+                int slot = @s.slot
+                if (slot == 7){
+                    die()
+                }
+                if (slot == 8){
+                    ConfirmTick:=0
+                    if (ConfirmTick > 0){
+                        parkour_spawnpoint.reset()
+                        Started = false
+                        intro.close()
+                        ConfirmTick = 0
+                    }
+                    else{
+                        tellraw(@s,("Click again to confirm",red))
+                        ConfirmTick = 300
+                    }
+                }
+            }
+        }
+        
+        Dead = false
+        /gamemode adventure @s[gamemode=survival]
+        if (@s[gamemode=creative] && !leaderboard.cubed){
+            tag(@a,Cheat)
+            Time.showCheat()
+        }
+        if (@s[gamemode=spectator,tag=!cutscene]){
+            tag(@a,Cheat)
+            Time.showCheat()
+        }
+        
+        Time.setLevel(Level)
+        Time.tick()
+        
+        wind.compute()
+        if (!wind.INWind){
+            effect_block.effectblockfun(#kill_block,die)
+            if (Level < 11){
+                effect_block.effectblockfun(#kill_block2,die)
+            }
+            if (Level < 30){
+                effect_block.effectblockfun(#kill_block3,die)
+            }
+        }
+        effect_block.effectblockfun(gold_block){
+            if (block(~ ~-1 ~ white_concrete)){
+                /execute in minecraft:overworld run tp @s -85.44 7.00 -240.55 -630.56 -5.99
+                timerpause()
+            }
+            if (block(~ ~-1 ~ white_concrete_powder)){
+                /execute in minecraft:overworld run tp @s -143.45 63.00 -159.73 -901.30 -4.30
+                timerpause()
+            }
+            if (block(~ ~-1 ~ calcite)){
+                /execute in minecraft:overworld run tp @s -68.57 114.00 -107.45 -629.80 0.01
+                timerpause()
+            }
+        }
+    }
+}
+
+room ending = room(30,204,-52,-38,268,22)
+ending.onEnter(){
+    if (Started){
+        checkpoint.end()
+        screen.addcontroll()
+        if (Started){
+            screen.showendscreen()
+        }
+        timerEnd()
+        FinishTick = 20
+    }
+}

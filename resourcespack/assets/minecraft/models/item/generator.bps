@@ -1,0 +1,19 @@
+models.item.flat(restart,"item/oak_door")
+models.item.flat(death,"item/clock_00")
+models.item.new(carrot_on_a_stick,("item/restart", 1),("item/death", 2))
+
+tools.sitted_npc(p_king)
+tools.sitted_npc(tudurak)
+tools.sitted_npc(stemister)
+
+models.item.new(emerald,("item/p_king", 1),("item/tudurak", 2),("item/stemister", 3))
+
+models.item.new(scute,
+("custom/shockwave_0",1),("custom/shockwave_1",2),("custom/shockwave_2",3),
+("custom/shockwave_3",4),("custom/shockwave_4",5),("custom/shockwave_5",6),
+
+("custom/screen_default",10),("custom/screen_target",11),("custom/screen_warning",12),
+("custom/beacon",20),("custom/beacon_outline",21),
+("custom/fan",50),("custom/wind",51)
+)
+
